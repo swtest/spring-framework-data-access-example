@@ -20,7 +20,7 @@ import kr.co.swtest.springframework.dataaccess.dao.CustomerDao;
 import kr.co.swtest.springframework.dataaccess.dto.CustomerDto;
 
 /**
- * 고객 DAO 구현체(JDBC) 테스트
+ * 고객 DAO 구현체(JDBC Template) 테스트
  * 
  * @author <a href="mailto:scroogy@swtest.co.kr">최영목</a>
  */
@@ -30,11 +30,11 @@ import kr.co.swtest.springframework.dataaccess.dto.CustomerDto;
         @ContextConfiguration("/applicationContext.xml") //
 })
 @Sql({ "/script/test-data.sql" })
-public class JdbcCustomerDaoTest {
+public class JdbcTemplateCustomerDaoTest {
 
     /** 고객 DAO */
     @Autowired
-    @Qualifier("JdbcCustomerDao")
+    @Qualifier("JdbcTemplateCustomerDao")
     private CustomerDao customerDao;
 
     // -------------------------------------------------------------------------
