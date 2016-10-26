@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.ContextHierarchy;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import kr.co.swtest.springframework.dataaccess.dao.CustomerDao;
@@ -21,11 +21,10 @@ import kr.co.swtest.springframework.dataaccess.dto.CustomerDto;
  * 
  * @author <a href="mailto:scroogy@swtest.co.kr">최영목</a>
  */
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextHierarchy({ //
-        @ContextConfiguration("/testApplicationContext.xml"), //    
-        @ContextConfiguration("/applicationContext.xml") //
-})
+@ContextConfiguration(locations = { "/applicationContext.xml", "/testApplicationContext.xml" })
+@Sql({ "/script/test-data.sql" })
 public class JdbcCustomerDaoTest {
 
     /** 고객 DAO */
