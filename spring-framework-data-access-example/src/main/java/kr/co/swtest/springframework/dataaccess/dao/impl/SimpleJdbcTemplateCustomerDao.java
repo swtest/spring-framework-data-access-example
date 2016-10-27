@@ -4,21 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import kr.co.swtest.springframework.dataaccess.dao.CustomerDao;
-import kr.co.swtest.springframework.dataaccess.dao.mapper.impl.CustomerDtoMapper;
-import kr.co.swtest.springframework.dataaccess.dao.template.JdbcTemplate;
+import kr.co.swtest.springframework.dataaccess.dao.mapper.impl.CustomerDtoRowMapper;
 import kr.co.swtest.springframework.dataaccess.dto.CustomerDto;
 
 /**
- * 고객 DAO 구현체(JDBC Template)
+ * SimpleJdbcTemplateCustomerDao
  * 
  * @author <a href="mailto:scroogy@swtest.co.kr">최영목</a>
  */
-@Repository("JdbcTemplateCustomerDao")
-public class JdbcTemplateCustomerDao implements CustomerDao {
+@Repository("SimpleJdbcTemplateCustomerDao")
+public class SimpleJdbcTemplateCustomerDao implements CustomerDao {
     
+    /** SimpleJdbcTemplate */
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -28,7 +29,7 @@ public class JdbcTemplateCustomerDao implements CustomerDao {
     @Override
     public void createCustomer(CustomerDto customer) {
         StringBuffer sql = new StringBuffer("insert into customer (cust_id, cust_nm, cust_email) values ?, ?, ?");
-        this.jdbcTemplate.executeUpdate(sql.toString(), customer.getId(), customer.getName(), customer.getEmail());
+        this.jdbcTemplate.update(sql.toString(), customer.getId(), customer.getName(), customer.getEmail());
     }
 
     /**
@@ -37,7 +38,11 @@ public class JdbcTemplateCustomerDao implements CustomerDao {
     @Override
     public CustomerDto readCustomerById(int customerId) {
         StringBuffer sql = new StringBuffer("select cust_id, cust_nm, cust_email from customer where cust_id = ?");
-        return this.jdbcTemplate.getSingleResult(new CustomerDtoMapper(), sql.toString(), customerId);
+        try {
+            return this.jdbcTemplate.queryForObject(sql.toString(), new CustomerDtoRowMapper(), customerId);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -67,7 +72,7 @@ public class JdbcTemplateCustomerDao implements CustomerDao {
             params.add(customer.getEmail());
         }
 
-        return this.jdbcTemplate.getResults(new CustomerDtoMapper(), sql.toString(), params.toArray());
+        return this.jdbcTemplate.query(sql.toString(), new CustomerDtoRowMapper(), params.toArray());
     }
 
     /**
@@ -76,7 +81,7 @@ public class JdbcTemplateCustomerDao implements CustomerDao {
     @Override
     public void updateCustomer(CustomerDto customer) {
         StringBuffer sql = new StringBuffer("update customer set cust_nm = ?, cust_email = ? where cust_id = ?");
-        this.jdbcTemplate.executeUpdate(sql.toString(), customer.getName(), customer.getEmail(), customer.getId());
+        this.jdbcTemplate.update(sql.toString(), customer.getName(), customer.getEmail(), customer.getId());
     }
 
     /**
@@ -85,7 +90,7 @@ public class JdbcTemplateCustomerDao implements CustomerDao {
     @Override
     public void deleteCustomerById(int customerId) {
         StringBuffer sql = new StringBuffer("delete from customer where cust_id = ?");
-        this.jdbcTemplate.executeUpdate(sql.toString(), customerId);
+        this.jdbcTemplate.update(sql.toString(), customerId);
     }
 
 }
