@@ -2,7 +2,7 @@ package kr.co.swtest.springframework.dataaccess;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -16,13 +16,17 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 public class TestApplicationContext {
 
     @Bean(name = "dataSource")
-    @Scope("prototype")
     public EmbeddedDatabase embeddedDatabase() {
         return new EmbeddedDatabaseBuilder() //
                 .setType(EmbeddedDatabaseType.HSQL) //
                 .addScript("/script/schema.sql") //
                 .addScript("/script/test-data.sql") //
                 .build();
+    }
+    
+    @Bean(name = "springJdbcTemplate")
+    public JdbcTemplate springJdbcTemplate() {
+        return new JdbcTemplate(embeddedDatabase());
     }
 
 }
